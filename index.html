@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            background: #f8f9fa;
+        }
+        h1 {
+            color: #1a1a1a;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            color: #6c757d;
+            font-size: 15px;
+            margin-bottom: 30px;
+            font-weight: 400;
+        }
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        .section-title {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 20px;
+            font-size: 17px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            color: #495057;
+            margin-bottom: 6px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        select, input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background: white;
+            color: #212529;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0,102,204,0.1);
+        }
+        .row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        .operative-row {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 12px;
+            position: relative;
+            border: 1px solid #e9ecef;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .remove-btn:hover {
+            background: #c82333;
+        }
+        .add-btn {
+            background: #198754;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 12px;
+            transition: all 0.2s;
+        }
+        .add-btn:hover {
+            background: #157347;
+            transform: translateY(-1px);
+        }
+        .on-cost-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .on-cost-btn {
+            padding: 12px;
+            border: 1.5px solid #dee2e6;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+            color: #495057;
+        }
+        .on-cost-btn:hover {
+            border-color: #0066cc;
+            color: #0066cc;
+        }
+        .on-cost-btn.active {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+        .summary {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 28px 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,102,204,0.3);
+        }
+        .summary h2 {
+            margin: 8px 0;
+            font-size: 42px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+        .summary p {
+            margin: 0;
+            opacity: 0.85;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        .breakdown {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+        .breakdown h3 {
+            margin: 0 0 18px 0;
+            font-size: 15px;
+            color: #212529;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #495057;
+            padding: 4px 0;
+        }
+        .breakdown-item.total {
+            font-weight: 700;
+            font-size: 16px;
+            color: #212529;
+            border-top: 2px solid #e9ecef;
+            padding-top: 14px;
+            margin-top: 12px;
+        }
+        .note {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pricing Calculator</h1>
+    <p class="subtitle">Quote Tool</p>
+
+    <div class="section">
+        <div class="section-title">Labour</div>
+        
+        <div id="operatives">
+            <!-- Operative rows will be added here -->
+        </div>
+        
+        <button class="add-btn" onclick="addOperative()">+ Add Operative</button>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Plant</div>
+        
+        <div id="vehicles">
+            <!-- Vehicle rows will be added here -->
+        </div>
+        
+        <button class="add-btn" onclick="addVehicle()">+ Add Vehicle</button>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Margin</div>
+        <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Select profit margin:</p>
+        <div class="on-cost-buttons">
+            <button class="on-cost-btn" data-multiplier="1.05">5%</button>
+            <button class="on-cost-btn" data-multiplier="1.10">10%</button>
+            <button class="on-cost-btn" data-multiplier="1.125">12.5%</button>
+            <button class="on-cost-btn active" data-multiplier="1.15">15%</button>
+            <button class="on-cost-btn" data-multiplier="1.20">20%</button>
+            <button class="on-cost-btn" data-multiplier="1.25">25%</button>
+            <button class="on-cost-btn" data-multiplier="1.30">30%</button>
+        </div>
+    </div>
+
+    <div class="summary">
+        <p>Total Quote</p>
+        <h2 id="finalTotal">£0.00</h2>
+        <p id="breakdownText">Add labour and plant</p>
+    </div>
+
+    <div class="breakdown">
+        <h3>Quote Breakdown</h3>
+        <div id="breakdownContent">
+            <p style="color: #888; font-size: 14px;">Add labour and plant to see breakdown</p>
+        </div>
+    </div>
+
+    <script>
+        const roles = [
+            { name: 'TTMBC', rate: 12.21 },
+            { name: 'M1/M2', rate: 12.71 },
+            { name: 'M3', rate: 12.71 },
+            { name: 'M4', rate: 12.71 },
+            { name: 'M5', rate: 13.21 },
+            { name: 'M6', rate: 13.71 },
+            { name: '12AB Operative', rate: 13.21 },
+            { name: '12AB LTMO', rate: 15.16 },
+            { name: '12A Foreman', rate: 15.17 },
+            { name: 'IPV Driver', rate: 13.71 },
+            { name: 'IPV Foreman', rate: 16.00 },
+            { name: 'TSCO', rate: 16.83 }
+        ];
+
+        const vehicles = [
+            { name: 'Convoy', rate: 37.50, mileage: 0.25 },
+            { name: '3.5t', rate: 56.05, mileage: 0.25 },
+            { name: '7.5t', rate: 112.10, mileage: 0.25 },
+            { name: 'IPV', rate: 139.68, mileage: 0.40 },
+            { name: '12C', rate: 150.78, mileage: 0.25 }
+        ];
+
+        let onCostMultiplier = 1.15;
+        let operativeCount = 0;
+        let vehicleCount = 0;
+
+        function formatMoney(amount) {
+            return '£' + amount.toFixed(2);
+        }
+
+        function addOperative() {
+            operativeCount++;
+            const div = document.createElement('div');
+            div.className = 'operative-row';
+            div.id = `op-${operativeCount}`;
+            
+            let roleOptions = roles.map(r => 
+                `<option value="${r.rate}">${r.name}</option>`
+            ).join('');
+            
+            div.innerHTML = `
+                <button class="remove-btn" onclick="removeOperative('op-${operativeCount}')">×</button>
+                <div class="row">
+                    <select class="op-role" onchange="calculate()">
+                        ${roleOptions}
+                    </select>
+                    <input type="number" class="op-hours" value="9.6" step="0.1" min="0" placeholder="Hours" onchange="calculate()">
+                    <input type="number" class="op-staff" value="1" min="1" placeholder="Staff" onchange="calculate()">
+                </div>
+            `;
+            
+            document.getElementById('operatives').appendChild(div);
+            calculate();
+        }
+
+        function removeOperative(id) {
+            document.getElementById(id).remove();
+            calculate();
+        }
+
+        function addVehicle() {
+            vehicleCount++;
+            const div = document.createElement('div');
+            div.className = 'operative-row';
+            div.id = `veh-${vehicleCount}`;
+            
+            let vehicleOptions = vehicles.map(v => 
+                `<option value="${v.rate}" data-mileage="${v.mileage}">${v.name}</option>`
+            ).join('');
+            
+            div.innerHTML = `
+                <button class="remove-btn" onclick="removeVehicle('veh-${vehicleCount}')">×</button>
+                <div class="row">
+                    <select class="veh-type" onchange="calculate()">
+                        ${vehicleOptions}
+                    </select>
+                    <input type="number" class="veh-miles" value="0" step="1" min="0" placeholder="Miles" onchange="calculate()">
+                    <input type="number" class="veh-days" value="1" min="1" placeholder="Days" onchange="calculate()">
+                </div>
+            `;
+            
+            document.getElementById('vehicles').appendChild(div);
+            calculate();
+        }
+
+        function removeVehicle(id) {
+            document.getElementById(id).remove();
+            calculate();
+        }
+
+        function calculate() {
+            let totalLabour = 0;
+            let totalVehicle = 0;
+            let breakdownHTML = '';
+
+            // Calculate operatives
+            const opRows = document.querySelectorAll('.op-role');
+            if (opRows.length > 0) {
+                breakdownHTML += '<div style="margin-bottom: 15px;"><strong>Labour</strong></div>';
+                opRows.forEach((select, idx) => {
+                    const row = select.closest('.operative-row');
+                    const rate = parseFloat(select.value);
+                    const hours = parseFloat(row.querySelector('.op-hours').value) || 0;
+                    const staff = parseInt(row.querySelector('.op-staff').value) || 1;
+                    const companyRate = rate * 1.3; // Company cost includes Tax/NI/Pension
+                    const subtotal = companyRate * hours * staff;
+                    totalLabour += subtotal;
+                    
+                    const roleName = select.options[select.selectedIndex].text;
+                    breakdownHTML += `
+                        <div class="breakdown-item">
+                            <span>${roleName} × ${staff} @ ${hours}hrs</span>
+                            <span>${formatMoney(subtotal)}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            // Calculate vehicles
+            const vehRows = document.querySelectorAll('.veh-type');
+            if (vehRows.length > 0) {
+                breakdownHTML += '<div style="margin: 15px 0 10px;"><strong>Plant</strong></div>';
+                vehRows.forEach((select, idx) => {
+                    const row = select.closest('.operative-row');
+                    const baseRate = parseFloat(select.value);
+                    const mileageRate = parseFloat(select.options[select.selectedIndex].dataset.mileage);
+                    const miles = parseInt(row.querySelector('.veh-miles').value) || 0;
+                    const days = parseInt(row.querySelector('.veh-days').value) || 1;
+                    const baseCost = baseRate * days;
+                    const mileageCost = miles * mileageRate;
+                    const companyCost = (baseCost + mileageCost) * 1.3; // Company cost includes Tax/NI/Pension
+                    totalVehicle += companyCost;
+                    
+                    const vehName = select.options[select.selectedIndex].text;
+                    breakdownHTML += `
+                        <div class="breakdown-item">
+                            <span>${vehName} × ${days} day${days > 1 ? 's' : ''} + ${miles}mi</span>
+                            <span>${formatMoney(companyCost)}</span>
+                        </div>
+                    `;
+                });
+            }
+
+            // Totals
+            const subtotal = totalLabour + totalVehicle;
+            const finalTotal = subtotal * onCostMultiplier;
+            const markupAmount = finalTotal - subtotal;
+
+            // Update summary
+            document.getElementById('finalTotal').textContent = formatMoney(finalTotal);
+            
+            const markupPercent = ((onCostMultiplier - 1) * 100).toFixed(1).replace('.0', '');
+            
+            if (subtotal > 0) {
+                document.getElementById('breakdownText').textContent = 
+                    `Subtotal ${formatMoney(subtotal)} + ${markupPercent}% margin`;
+            } else {
+                document.getElementById('breakdownText').textContent = 'Add labour and plant';
+            }
+
+            // Update breakdown
+            if (subtotal > 0) {
+                breakdownHTML += `
+                    <div class="breakdown-item total" style="margin-top: 15px;">
+                        <span>Subtotal</span>
+                        <span>${formatMoney(subtotal)}</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span>Margin (${markupPercent}%)</span>
+                        <span>${formatMoney(markupAmount)}</span>
+                    </div>
+                    <div class="breakdown-item total" style="color: #0066cc;">
+                        <span>Total</span>
+                        <span>${formatMoney(finalTotal)}</span>
+                    </div>
+                `;
+            } else {
+                breakdownHTML = '<p style="color: #888; font-size: 14px;">Add labour and plant to see breakdown</p>';
+            }
+            
+            document.getElementById('breakdownContent').innerHTML = breakdownHTML;
+        }
+
+        // On cost button listeners
+        document.querySelectorAll('.on-cost-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.on-cost-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                onCostMultiplier = parseFloat(btn.dataset.multiplier);
+                calculate();
+            });
+        });
+
+        // Add initial rows
+        addOperative();
+        addVehicle();
+    </script>
+</body>
+</html>
